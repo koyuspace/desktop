@@ -92,7 +92,8 @@ if (!gotTheLock) {
       show: false,
       width: 1024,
       height: 728,
-      icon: path.join(__dirname, '/icon.png')
+      icon: path.join(__dirname, '/icon.png'),
+      backgroundColor: '#222233'
     });
 
     mainWindow.loadURL(`file://${__dirname}/app.html`);
