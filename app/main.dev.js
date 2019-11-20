@@ -17,7 +17,7 @@ var path = require('path');
 
 let mainWindow = null;
 let tray = null;
-const version = "4";
+const version = "5";
 
 const server = 'https://update.electronjs.org';
 const feed = `${server}/koyuawsmbrtn/koyuspace-desktop/${process.platform}-${process.arch}/${version}`;

@@ -53,7 +53,7 @@
   "main": "./app/main.prod.js",
   "build": {
     "productName": "koyu.space",
-    "appId": "com.Sommerlichter.desktop",
+    "appId": "electron.app.koyu.space",
     "files": [
       "app/dist/",
       "app/app.html",
