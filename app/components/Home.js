@@ -24,7 +24,7 @@ export default class Home extends Component<Props> {
       window.setInterval(function() {
         $.get("https://koyu.space/api/v1/instance", function() {
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
-            if (data.split("\n")[0] === "1.0.6") {
+            if (data.split("\n")[0] === "1.0.7") {
               console.log("ok: "+data.split("\n")[0]);
               location.href = "https://koyu.space/web/timelines/home";
             } else {
