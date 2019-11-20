@@ -10,13 +10,25 @@
  *
  * @flow
  */
-import { app, BrowserWindow, Menu, nativeImage, Tray } from 'electron';
+import { app, BrowserWindow, Menu, nativeImage, Tray, autoUpdater } from 'electron';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 var path = require('path');
 
 let mainWindow = null;
 let tray = null;
+const version = "4";
+
+const server = 'https://update.electronjs.org';
+const feed = `${server}/koyuawsmbrtn/koyuspace-desktop/${process.platform}-${process.arch}/${version}`;
+
+autoUpdater.setFeedURL(feed);
+
+setInterval(() => {
+  try {
+    autoUpdater.checkForUpdates();
+  } catch (e) {}
+}, 10000);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
