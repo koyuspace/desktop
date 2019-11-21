@@ -13,6 +13,17 @@
 import { app, BrowserWindow, Menu, nativeImage, Tray } from 'electron';
 import log from 'electron-log';
 import MenuBuilder from './menu';
+import { autoUpdater } from 'electron-updater';
+
+const server = 'https://update.electronjs.org';
+const feed = `${server}/koyuawsmbrtn/koyuspace-desktop/${process.platform}-${process.arch}/1.0.8`;
+
+autoUpdater.setFeedURL(feed);
+
+setInterval(() => {
+  autoUpdater.checkForUpdates()
+}, 10 * 60 * 1000)
+
 var path = require('path');
 
 let mainWindow = null;
