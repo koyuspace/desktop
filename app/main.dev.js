@@ -15,16 +15,15 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { autoUpdater } from 'electron-updater';
 
-const server = 'https://update.electronjs.org';
-const feed = `${server}/koyuawsmbrtn/koyuspace-desktop/${process.platform}-${process.arch}/1.0.8`;
-
-autoUpdater.setFeedURL(feed);
-
-setInterval(() => {
-  autoUpdater.checkForUpdates()
-}, 10 * 60 * 1000)
-
 var path = require('path');
+
+export default class AppUpdater {
+  constructor() {
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+}
 
 let mainWindow = null;
 let tray = null;
@@ -82,6 +81,8 @@ if (!gotTheLock) {
     ) {
       installExtensions();
     }
+
+    new AppUpdater();
 
     const iconPath = path.join(__dirname, 'icon.png');
     let appIcon = nativeImage.createFromPath(iconPath);

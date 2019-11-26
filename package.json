@@ -1,7 +1,7 @@
 {
   "name": "koyuspace-desktop",
   "productName": "koyu.space",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "koyu.space Desktop application",
   "author": "koyu.space Developers <support@koyu.space>",
   "scripts": {
@@ -22,7 +22,7 @@
     "package-ci": "yarn postinstall && yarn build && electron-builder --publish always",
     "package-linux": "yarn build && electron-builder build --linux",
     "package-win": "yarn build && electron-builder build --win --x64",
-    "postinstall": "yarn flow-typed && electron-builder install-app-deps package.json && yarn build-dll && opencollective-postinstall",
+    "postinstall": "yarn build-dll",
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{*{js,jsx,json},babelrc,eslintrc,prettierrc,stylelintrc}'",
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
     "prestart": "yarn build",
@@ -91,7 +91,17 @@
     "directories": {
       "buildResources": "resources",
       "output": "release"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "koyuawsmbrtn",
+      "repo": "koyuspace-desktop",
+      "private": false
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koyuawsmbrtn/koyuspace-desktop.git"
   },
   "license": "MIT",
   "homepage": "https://koyu.space/about",
@@ -157,12 +167,10 @@
     "enzyme-adapter-react-16": "^1.7.0",
     "enzyme-to-json": "^3.3.4",
     "eslint": "^5.9.0",
-    "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^3.3.0",
     "eslint-formatter-pretty": "^2.0.0",
     "eslint-import-resolver-webpack": "^0.10.1",
     "eslint-plugin-compat": "^2.6.3",
-    "eslint-plugin-flowtype": "^3.2.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^22.0.0",
     "eslint-plugin-jsx-a11y": "6.1.2",
@@ -179,7 +187,6 @@
     "lint-staged": "^8.1.0",
     "mini-css-extract-plugin": "^0.4.4",
     "node-sass": "^4.10.0",
-    "opencollective-postinstall": "^2.0.1",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "prettier": "^1.15.2",
     "react-test-renderer": "^16.6.3",
@@ -217,7 +224,8 @@
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
-    "source-map-support": "^0.5.9"
+    "source-map-support": "^0.5.9",
+    "update-electron-app": "^1.5.0"
   },
   "devEngines": {
     "node": ">=7.x",
