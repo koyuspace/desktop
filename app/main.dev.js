@@ -10,12 +10,40 @@
  *
  * @flow
  */
-import { app, BrowserWindow, Menu, nativeImage, Tray } from 'electron';
+import { app, BrowserWindow, Menu, nativeImage, Tray, dialog } from 'electron';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { autoUpdater } from 'electron-updater';
+import $ from 'jquery';
+const contextMenu = require('electron-context-menu');
 
 var path = require('path');
+var shell = require('electron').shell;
+var fs = require('fs');
+var https = require('https');
+
+//Handle right-clicks
+contextMenu({
+  menu: (actions, params, browserWindow) => [
+    actions.cut({
+      label: "Cut",
+      accelerator: "CmdOrCtrl+X"
+    }),
+    actions.copy({
+      label: "Copy",
+      accelerator: "CmdOrCtrl+C"
+    }),
+    actions.copyLink({
+      label: "Copy link"
+    }),
+    actions.paste({
+      label: "Paste",
+      accelerator: "CmdOrCtrl+V"
+    }),
+    actions.saveImageAs({
+      label: "Save image"
+    })
+]});
 
 export default class AppUpdater {
   constructor() {
@@ -88,7 +116,7 @@ if (!gotTheLock) {
     let appIcon = nativeImage.createFromPath(iconPath);
     tray = new Tray(appIcon);
 
-    const contextMenu = Menu.buildFromTemplate([
+    const trayMenu = Menu.buildFromTemplate([
         { label: 'Show koyu.space', click:  function(){
             mainWindow.show();
         } },
@@ -98,7 +126,7 @@ if (!gotTheLock) {
         } }
     ]);
 
-    tray.setContextMenu(contextMenu)
+    tray.setContextMenu(trayMenu)
 
     mainWindow = new BrowserWindow({
       show: false,
@@ -110,8 +138,6 @@ if (!gotTheLock) {
 
     mainWindow.loadURL(`file://${__dirname}/app.html`);
 
-    // @TODO: Use 'ready-to-show' event
-    //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
     mainWindow.webContents.on('did-finish-load', () => {
       if (!mainWindow) {
         throw new Error('"mainWindow" is not defined');
@@ -144,5 +170,40 @@ if (!gotTheLock) {
     if (process.env.NODE_ENV === 'production') {
       mainWindow.setMenu(null);
     }
+
+    // Open third-party links in browser
+    var handleRedirect = (e, url) => {
+      if(url != mainWindow.webContents.getURL()) {
+        e.preventDefault();
+        shell.openExternal(url);
+      }
+    }
+    mainWindow.webContents.on('new-window', handleRedirect);
+
+    // Handle downloads
+    function download(url, dest, cb) {
+      var file = fs.createWriteStream(dest);
+      var request = https.get(url, function(response) {
+          response.pipe(file);
+          file.on('finish', function() {
+              file.close(cb); // close() is async, call cb after close completes.
+          });
+      }).on('error', function(e) { // Handle errors
+          fs.unlink(dest); // Delete the file async. (But we don't check the result)
+          if (cb) cb(e.message);
+      });
+    };
+    var handleNavigation = (e, url) => {
+      if (url.includes(".mp4") || url.includes(".mp3")) {
+        e.preventDefault();
+        var toLocalPath = path.resolve(app.getPath("downloads"), path.basename(url));
+        var userChosenPath = dialog.showSaveDialog({ defaultPath: toLocalPath });
+        if(userChosenPath){
+            download(url, userChosenPath);
+        }
+      }
+    }
+    mainWindow.webContents.on('will-navigate', handleNavigation);
+    
   });
 }
