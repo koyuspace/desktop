@@ -194,7 +194,18 @@ if (!gotTheLock) {
       });
     };
     var handleNavigation = (e, url) => {
-      if (url.includes(".mp4") || url.includes(".mp3")) {
+      if (url.includes(".mp4")
+      || url.includes(".mp3")
+      || url.includes(".ogg")
+      || url.includes(".flac")
+      || url.includes(".wav")
+      || url.includes(".mkv")
+      || url.includes(".mov")
+      || url.includes(".wmv")
+      || url.includes(".oga")
+      || url.includes(".ogv")
+      || url.includes(".opus")
+      || url.includes(".webm")) {
         e.preventDefault();
         var toLocalPath = path.resolve(app.getPath("downloads"), path.basename(url));
         var userChosenPath = dialog.showSaveDialog({ defaultPath: toLocalPath });
