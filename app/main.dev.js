@@ -13,7 +13,6 @@
 import { app, BrowserWindow, Menu, nativeImage, Tray, dialog } from 'electron';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import { autoUpdater } from 'electron-updater';
 import $ from 'jquery';
 const contextMenu = require('electron-context-menu');
 
@@ -44,14 +43,6 @@ contextMenu({
       label: "Save image"
     })
 ]});
-
-export default class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
 
 let mainWindow = null;
 let tray = null;
@@ -109,8 +100,6 @@ if (!gotTheLock) {
     ) {
       installExtensions();
     }
-
-    new AppUpdater();
 
     const iconPath = path.join(__dirname, 'icon.png');
     let appIcon = nativeImage.createFromPath(iconPath);
@@ -192,7 +181,7 @@ if (!gotTheLock) {
           fs.unlink(dest); // Delete the file async. (But we don't check the result)
           if (cb) cb(e.message);
       });
-    };
+    }
     var handleNavigation = (e, url) => {
       if (url.includes(".mp4")
       || url.includes(".mp3")
