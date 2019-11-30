@@ -169,7 +169,7 @@ if (!gotTheLock) {
 
     // Open third-party links in browser except admin links
     var handleRedirect = (e, url) => {
-      if(url != mainWindow.webContents.getURL() && !url.includes("/admin")) {
+      if(url != mainWindow.webContents.getURL() && !url.includes("/admin") && !url.includes("/sidekiq")) {
         e.preventDefault();
         shell.openExternal(url);
       }
