@@ -18,7 +18,8 @@ type Props = {};
 var error = false;
 var triggerupdate = false;
 var updatetriggered = false;
-var messages = ["Bunning...", "Planning tea-party...", "Speaking German...", "Waiting for the train...", "Hopping...", "Talking to servers..."];
+var messages = ["Bunning...", "Planning tea-party...", "Making friends...", "Waiting for the train...",
+                "Hopping...", "Talking to servers...", "Inviting friends...", "Having a good time..."];
 var state = 0;
 
 window.addEventListener('online', function() {
@@ -35,7 +36,7 @@ export default class Home extends Component<Props> {
       window.setInterval(function() {
         $.get("https://koyu.space/api/v1/instance", function() {
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
-            if (data.split("\n")[0] === "11") {
+            if (data.split("\n")[0] === "13") {
               console.log("ok: "+data.split("\n")[0]);
               location.href = "https://koyu.space/web/timelines/home";
             } else {
