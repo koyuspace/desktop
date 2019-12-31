@@ -214,6 +214,10 @@ if (!gotTheLock) {
             download(url, userChosenPath);
         }
       }
+      if (!url.includes("koyu.space")) {
+        e.preventDefault();
+        shell.openExternal(url);
+      }
     }
     mainWindow.webContents.on('will-navigate', handleNavigation);
     
