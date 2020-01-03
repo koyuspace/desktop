@@ -214,12 +214,15 @@ if (!gotTheLock) {
             download(url, userChosenPath);
         }
       }
-      if (!url.includes("koyu.space")) {
+    }
+    mainWindow.webContents.on('will-navigate', handleNavigation);
+
+    var handleWillNavigate = (e, url) => {
+      if (!url.includes("koyu.space") || url.includes("/@")) {
         e.preventDefault();
         shell.openExternal(url);
       }
     }
-    mainWindow.webContents.on('will-navigate', handleNavigation);
-    
+    mainWindow.webContents.on('will-navigate', handleWillNavigate);
   });
 }
