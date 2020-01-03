@@ -38,7 +38,7 @@ export default class Home extends Component<Props> {
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
             if (data.split("\n")[0] === "17") {
               console.log("ok: "+data.split("\n")[0]);
-              location.href = "https://koyu.space/web/timelines/home";
+              location.href = "https://koyu.space/web";
             } else {
               //Updater
               if (!updatetriggered) {
