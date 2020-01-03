@@ -167,11 +167,14 @@ if (!gotTheLock) {
 
     mainWindow.setMenu(null);
 
-    // Open third-party links in browser except admin links
+    // Open third-party links in browser
     var handleRedirect = (e, url) => {
-      if(url != mainWindow.webContents.getURL() && !url.includes("/admin") && !url.includes("/sidekiq")) {
+      if(!url.includes("koyu.space")) {
         e.preventDefault();
         shell.openExternal(url);
+      } else {
+        e.preventDefault();
+        mainWindow.loadURL(url);
       }
     }
     mainWindow.webContents.on('new-window', handleRedirect);
