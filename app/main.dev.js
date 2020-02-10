@@ -10,7 +10,7 @@
  *
  * @flow
  */
-import { app, BrowserWindow, Menu, nativeImage, Tray, dialog } from 'electron';
+import { app, BrowserWindow, Menu, nativeImage, Tray, dialog, globalShortcut } from 'electron';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import $ from 'jquery';
@@ -109,6 +109,20 @@ if (!gotTheLock) {
     ) {
       installExtensions();
     }
+
+    // Reload keyboard shortcuts
+    globalShortcut.register('CommandOrControl+R', () => {
+      mainWindow.reload();
+    });
+    globalShortcut.register('CommandOrControl+Shift+R', () => {
+      mainWindow.reload();
+    });
+    globalShortcut.register('F5', () => {
+      mainWindow.reload();
+    });
+    globalShortcut.register('Shift+F5', () => {
+      mainWindow.reload();
+    });
 
     const iconPath = path.join(__dirname, 'icon.png');
     let appIcon = nativeImage.createFromPath(iconPath);
