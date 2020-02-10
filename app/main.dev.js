@@ -10,7 +10,7 @@
  *
  * @flow
  */
-import { app, BrowserWindow, Menu, nativeImage, Tray, dialog, globalShortcut } from 'electron';
+import { app, BrowserWindow, Menu, nativeImage, Tray, dialog, globalShortcut, MenuItem } from 'electron';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import $ from 'jquery';
@@ -111,18 +111,7 @@ if (!gotTheLock) {
     }
 
     // Reload keyboard shortcuts
-    globalShortcut.register('CommandOrControl+R', () => {
-      mainWindow.reload();
-    });
-    globalShortcut.register('CommandOrControl+Shift+R', () => {
-      mainWindow.reload();
-    });
-    globalShortcut.register('F5', () => {
-      mainWindow.reload();
-    });
-    globalShortcut.register('Shift+F5', () => {
-      mainWindow.reload();
-    });
+
 
     const iconPath = path.join(__dirname, 'icon.png');
     let appIcon = nativeImage.createFromPath(iconPath);
@@ -148,18 +137,23 @@ if (!gotTheLock) {
       backgroundColor: '#222233'
     });
 
+    var firstload = true;
+
     mainWindow.loadURL(`file://${__dirname}/app.html`);
 
     mainWindow.webContents.on('did-finish-load', () => {
       if (!mainWindow) {
         throw new Error('"mainWindow" is not defined');
       }
-      if (process.env.START_MINIMIZED) {
-        event.preventDefault();
-        mainWindow.hide();
-      } else {
-        mainWindow.show();
-        mainWindow.focus();
+      if (firstload) {
+        if (process.env.START_MINIMIZED) {
+          event.preventDefault();
+          mainWindow.hide();
+        } else {
+          mainWindow.show();
+          mainWindow.focus();
+        }
+        firstload = false;
       }
     });
 
@@ -176,10 +170,99 @@ if (!gotTheLock) {
         mainWindow.hide();
     });
 
-    const menuBuilder = new MenuBuilder(mainWindow);
-    menuBuilder.buildMenu();
+    mainWindow.on('before-quit', () => {
+      mainWindow.removeAllListeners('close');
+      mainWindow.close();
+    });
 
-    mainWindow.setMenu(null);
+    const template = [{
+        label: 'File',
+        submenu: [
+          {
+            label: "Quit",
+            accelerator: "CommandOrControl+Q",
+            click: () => {
+              mainWindow.destroy();
+              app.quit(0);
+            }
+          }
+        ]
+      },
+      {
+      label: 'Edit',
+      submenu: [
+        {
+          role: 'undo'
+        },
+        {
+          role: 'redo'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'cut'
+        },
+        {
+          role: 'copy'
+        },
+        {
+          role: 'paste'
+        },
+        {
+          role: 'pasteandmatchstyle'
+        },
+        {
+          role: 'delete'
+        },
+        {
+          role: 'selectall'
+        }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click (item, focusedWindow) {
+            if (focusedWindow) focusedWindow.reload()
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'resetzoom'
+        },
+        {
+          role: 'zoomin'
+        },
+        {
+          role: 'zoomout'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'togglefullscreen'
+        }
+      ]
+    },
+    {
+      role: 'window',
+      submenu: [
+        {
+          role: 'minimize'
+        },
+        {
+          role: 'close'
+        }
+      ]
+    }];
+    const menu = Menu.buildFromTemplate(template)
+    mainWindow.setMenu(menu);
 
     // Open third-party links in browser
     var handleRedirect = (e, url) => {
