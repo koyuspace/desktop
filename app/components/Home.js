@@ -14,6 +14,7 @@ var https = require('https');
 var path = require('path');
 var app = require('electron').app;
 
+// Initialize variables
 type Props = {};
 var error = false;
 var triggerupdate = false;
@@ -22,19 +23,23 @@ var messages = ["Bunning...", "Planning tea-party...", "Making friends...", "Wai
                 "Hopping...", "Talking to servers...", "Inviting friends...", "Having a good time..."];
 var state = 0;
 
+// Timeout after 10 seconds with timeout error
 window.addEventListener('online', function() {
   window.setTimeout(function() {
     error = false;
   }, 10000);
 });
 
+// Main class
 export default class Home extends Component<Props> {
   props: Props;
 
   componentDidMount() {
     $(document).ready(function() {
       window.setInterval(function() {
+        // Check if koyu.space is online
         $.get("https://koyu.space/api/v1/instance", function() {
+          // Connect to update server and check for updates
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
             if (data.split("\n")[0] === "20") {
               console.log("ok: "+data.split("\n")[0]);
@@ -66,6 +71,7 @@ export default class Home extends Component<Props> {
       }, 10000);
     });
 
+    // Update notices every second and print errors in case
     window.setInterval(function() {
       var p = messages.length - 1;
       if (state>p) {
@@ -121,10 +127,11 @@ export default class Home extends Component<Props> {
     }, 1000);
   }
 
+  // Render main app
   render() {
     return (
       <div className="container" data-tid="container">
-        <img src={bun} /><br /><br />
+        <img src={bun} id="desktop__loading" /><br /><br />
         <small id="notice" style={{ color: "#fff", fontFamily: "sans-serif" }}>Loading buns...</small>
       </div>
     );
