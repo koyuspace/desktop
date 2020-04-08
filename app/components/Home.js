@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../constants/routes';
 import styles from './Home.css';
-import bun from './bun.png';
+import spinner from './loading.svg';
 import buncry from './buncry.png';
 import download_spinner from './download.svg'
 import $ from 'jquery';
@@ -19,8 +19,8 @@ type Props = {};
 var error = false;
 var triggerupdate = false;
 var updatetriggered = false;
-var messages = ["Bunning...", "Planning tea-party...", "Making friends...", "Waiting for the train...",
-                "Hopping...", "Talking to servers...", "Inviting friends...", "Having a good time..."];
+var messages = ["Loading...", "Looking for files...", "Making new friends...", "Helping grandpa out...",
+                "Doing cool skate tricks...", "Listening to Vaporwave...", "Doing some important work..."];
 var state = 0;
 
 // Timeout after 10 seconds with timeout error
@@ -131,8 +131,8 @@ export default class Home extends Component<Props> {
   render() {
     return (
       <div className="container" data-tid="container">
-        <img src={bun} id="desktop__loading" /><br /><br />
-        <small id="notice" style={{ color: "#fff", fontFamily: "sans-serif" }}>Loading buns...</small>
+        <img src={spinner} id="desktop__loading" /><br /><br />
+        <small id="notice" style={{ color: "#fff", fontFamily: "sans-serif" }}>Loading...</small>
       </div>
     );
   }
