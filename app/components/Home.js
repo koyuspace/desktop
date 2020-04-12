@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../constants/routes';
-import styles from './Home.css';
+import './Home.css';
 import spinner from './loading.svg';
 import buncry from './buncry.png';
-import download_spinner from './download.svg'
+import download_spinner from './download.svg';
+import logo from './logo.png';
 import $ from 'jquery';
 
 var shell = require('electron').shell;
@@ -41,7 +42,7 @@ export default class Home extends Component<Props> {
         $.get("https://koyu.space/api/v1/instance", function() {
           // Connect to update server and check for updates
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
-            if (data.split("\n")[0] === "22") {
+            if (data.split("\n")[0] === "23") {
               console.log("ok: "+data.split("\n")[0]);
               location.href = "https://koyu.space/web/timelines/home";
             } else {
@@ -52,19 +53,19 @@ export default class Home extends Component<Props> {
             }
           }).fail(function() {
             console.log("fail");
-            $("img").attr("src", buncry);
+            $("#desktop__loading").attr("src", buncry);
             error = true;
             $("#notice").html("Error: No internet connection.");
           });
         }).fail(function() {
-          $("img").attr("src", buncry);
+          $("#desktop__loading").attr("src", buncry);
           error = true;
           $("#notice").html("Error: No internet connection.");
         });
       }, 3000);
       window.setTimeout(function() {
         if (!error && !updatetriggered) {
-          $("img").attr("src", buncry);
+          $("#desktop__loading").attr("src", buncry);
           error = true;
           $("#notice").html("Error: Timeout reached.");
         }
@@ -94,12 +95,12 @@ export default class Home extends Component<Props> {
           if (process.platform === "win32") {
             url = "https://koyu.keybase.pub/desktop.exe";
           } else {
-            $("img").attr("src", buncry);
+            $("#desktop__loading").attr("src", buncry);
             $("#notice").html("Error: Can't run updates, please download the app <a href=\"https://koyu.keybase.pub/desktop.AppImage\" style=\"color:#fff\">here</a>.")
             error = true;
           }
           if (!error) {
-            $("img").attr("src", download_spinner);
+            $("#desktop__loading").attr("src", download_spinner);
             $("#notice").html("Downloading update...");
             var file = fs.createWriteStream(dest);
             var request = https.get(url, function(response) {
@@ -115,12 +116,12 @@ export default class Home extends Component<Props> {
                 });
             }).on('error', function(e) { // Handle errors
                 fs.unlink(dest); // Delete the file async. (But we don't check the result)
-                $("img").attr("src", buncry);
+                $("#desktop__loading").attr("src", buncry);
                 $("#notice").html(e)
             });
           }
         } catch (e) {
-          $("img").attr("src", buncry);
+          $("#desktop__loading").attr("src", buncry);
           $("#notice").html(e);
         }
       }
@@ -130,10 +131,13 @@ export default class Home extends Component<Props> {
   // Render main app
   render() {
     return (
-      <div className="container" data-tid="container">
-        <img src={spinner} id="desktop__loading" /><br /><br />
-        <small id="notice" style={{ color: "#fff", fontFamily: "sans-serif" }}>Loading...</small>
-      </div>
+	  <div>
+	    <img src={logo} height="64" />
+        <div className="container" style={{ padding: "20px", backgroundColor: "#223", borderRadius: "10px", maxWidth: "300px", maxHeight: "350px", textAlign: "center", margin: "0 auto", marginTop: "25vh" }} data-tid="container">
+          <img src={spinner} id="desktop__loading" /><br /><br />
+          <small id="notice" style={{ color: "#fff", fontFamily: "sans-serif" }}>Loading...</small>
+        </div>
+	  </div>
     );
   }
 }

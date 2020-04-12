@@ -1,0 +1,6 @@
+body {
+	background-image: url(./bg.jpg) !important;
+	background-size: cover !important;
+    background-attachment: fixed !important;
+	image-rendering: crisp-edges !important;
+}
