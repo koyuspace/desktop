@@ -42,7 +42,7 @@ export default class Home extends Component<Props> {
         $.get("https://koyu.space/api/v1/instance", function() {
           // Connect to update server and check for updates
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
-            if (data.split("\n")[0] === "23") {
+            if (data.split("\n")[0] === "24") {
               console.log("ok: "+data.split("\n")[0]);
               location.href = "https://koyu.space/web/timelines/home";
             } else {
