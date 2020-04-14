@@ -339,7 +339,7 @@ if (!gotTheLock) {
     mainWindow.webContents.on('will-navigate', handleNavigation);
 
     var handleWillNavigate = (e, url) => {
-      if (!url.includes("koyu.space") || url.includes("/@")) {
+      if (!url.includes("https://koyu.space") || url.includes("/@")) {
         e.preventDefault();
         shell.openExternal(url);
       }
