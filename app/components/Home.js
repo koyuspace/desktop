@@ -1,4 +1,5 @@
 // @flow
+import { remote } from 'electron';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../constants/routes';
@@ -6,8 +7,11 @@ import './Home.css';
 import spinner from './loading.svg';
 import buncry from './buncry.png';
 import download_spinner from './download.svg';
-import logo from './logo.png';
+import icon from './logo.png';
 import $ from 'jquery';
+import TitleBar from 'frameless-titlebar';
+
+const currentWindow = remote.getCurrentWindow();
 
 var shell = require('electron').shell;
 var fs = require('fs');
@@ -23,6 +27,7 @@ var updatetriggered = false;
 var messages = ["Loading...", "Looking for files...", "Making new friends...", "Helping grandpa out...",
                 "Doing cool skate tricks...", "Listening to Vaporwave...", "Doing some important work..."];
 var state = 0;
+var loaded = false;
 
 // Timeout after 10 seconds with timeout error
 window.addEventListener('online', function() {
@@ -44,7 +49,8 @@ export default class Home extends Component<Props> {
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
             if (data.split("\n")[0] === "25") {
               console.log("ok: "+data.split("\n")[0]);
-              location.href = "https://koyu.space/web/timelines/home";
+              location.href = "https://koyu.space";
+              loaded = true;
             } else {
               // Updater only works on Windows now
               if (process.platform === "win32") {
@@ -54,7 +60,11 @@ export default class Home extends Component<Props> {
               } else {
                 console.log("ok: "+data.split("\n")[0]);
                 console.warn("Update available, but skipping since it's not running on Windows...");
-                location.href = "https://koyu.space/web/timelines/home";
+                if (!loaded) {
+                  $("#koyuspace-desktop").attr("style", "margin:0;padding:0;");
+                  $("#koyuspace-desktop").html("<webview id=\"koyuspace-webview\" src=\"https://koyu.space\" style=\"width:100vw;height:98vh;\"></webview>");
+                  loaded = true;
+                }
               }
             }
           }).fail(function() {
@@ -138,13 +148,36 @@ export default class Home extends Component<Props> {
   // Render main app
   render() {
     return (
-	  <div>
-	    <img src={logo} height="64" />
-        <div className="container" style={{ padding: "20px", backgroundColor: "#223", borderRadius: "10px", maxWidth: "300px", maxHeight: "350px", textAlign: "center", margin: "0 auto", marginTop: "25vh" }} data-tid="container">
-          <img src={spinner} id="desktop__loading" /><br /><br />
-          <small id="notice" style={{ color: "#fff", fontFamily: "sans-serif" }}>Loading...</small>
-        </div>
-	  </div>
+    <div>
+      <div style={{marginBottom: "-2px"}} id="titlebar">
+        <TitleBar
+          currentWindow={currentWindow} // electron window instance
+          platform={process.platform} // win32, darwin, linux
+          theme={{
+            "bar": {
+              "palette": "dark",
+              "height": "28px",
+              "color": "#fff",
+              "background": "#222233"
+            }
+          }}
+          title=""
+          onClose={() => currentWindow.close()}
+          onMinimize={() => currentWindow.minimize()}
+          onMaximize={() => currentWindow.isMaximized() ? currentWindow.unmaximize() : currentWindow.maximize()}
+          // when the titlebar is double clicked
+          onDoubleClick={() => currentWindow.isMaximized() ? currentWindow.unmaximize() : currentWindow.maximize()}
+        >
+          {/* custom titlebar items */}
+        </TitleBar>
+      </div>
+      <div id="koyuspace-desktop">
+          <div className="container" style={{ padding: "20px", backgroundColor: "#223", borderRadius: "10px", maxWidth: "300px", maxHeight: "350px", textAlign: "center", margin: "0 auto", marginTop: "25vh" }} data-tid="container">
+            <img src={spinner} id="desktop__loading" /><br /><br />
+            <small id="notice" style={{ color: "#fff", fontFamily: "sans-serif" }}>Loading...</small>
+          </div>
+      </div>
+    </div>
     );
   }
 }
