@@ -54,7 +54,7 @@ export default class Home extends Component<Props> {
               } else {
                 console.log("ok: "+data.split("\n")[0]);
                 console.warn("Update available, but skipping since it's not running on Windows...");
-                //location.href = "https://koyu.space/web/timelines/home";
+                location.href = "https://koyu.space/web/timelines/home";
               }
             }
           }).fail(function() {
