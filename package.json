@@ -1,7 +1,7 @@
 {
   "name": "koyuspace-desktop",
   "productName": "koyu.space",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "description": "koyu.space Desktop application",
   "author": "koyu.space Developers <support@koyu.space>",
   "scripts": {

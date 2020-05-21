@@ -47,10 +47,13 @@ export default class Home extends Component<Props> {
         $.get("https://koyu.space/api/v1/instance", function() {
           // Connect to update server and check for updates
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
-            if (data.split("\n")[0] === "25") {
+            if (data.split("\n")[0] === "26") {
               console.log("ok: "+data.split("\n")[0]);
-              location.href = "https://koyu.space";
-              loaded = true;
+              if (!loaded) {
+                $("#koyuspace-desktop").attr("style", "margin:0;padding:0;");
+                $("#koyuspace-desktop").html("<webview id=\"koyuspace-webview\" src=\"https://koyu.space\" style=\"width:100vw;height:98vh;\"></webview>");
+                loaded = true;
+              }
             } else {
               // Updater only works on Windows now
               if (process.platform === "win32") {
