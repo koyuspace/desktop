@@ -42,13 +42,19 @@ export default class Home extends Component<Props> {
         $.get("https://koyu.space/api/v1/instance", function() {
           // Connect to update server and check for updates
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
-            if (data.split("\n")[0] === "24") {
+            if (data.split("\n")[0] === "25") {
               console.log("ok: "+data.split("\n")[0]);
               location.href = "https://koyu.space/web/timelines/home";
             } else {
-              //Updater
-              if (!updatetriggered) {
-                triggerupdate = true;
+              // Updater only works on Windows now
+              if (process.platform === "win32") {
+                if (!updatetriggered) {
+                  triggerupdate = true;
+                }
+              } else {
+                console.log("ok: "+data.split("\n")[0]);
+                console.warn("Update available, but skipping since it's not running on Windows...");
+                //location.href = "https://koyu.space/web/timelines/home";
               }
             }
           }).fail(function() {
@@ -93,12 +99,13 @@ export default class Home extends Component<Props> {
           var url = "";
           var dest = localStorage.getItem("dlpath");
           if (process.platform === "win32") {
-            url = "https://koyu.keybase.pub/desktop.exe";
-          } else {
+            url = "https://updates.koyu.space/desktop/desktop.exe";
+          }/*  else {
             $("#desktop__loading").attr("src", buncry);
-            $("#notice").html("Error: Can't run updates, please download the app <a href=\"https://koyu.keybase.pub/desktop.AppImage\" style=\"color:#fff\">here</a>.")
+            $("#notice").html("Error: Can't run updates, please download the app <a href=\"https://updates.koyu.space/desktop/desktop.AppImage\" style=\"color:#fff\">here</a>.")
             error = true;
-          }
+          } */
+          // Updater has been disabled on Linux builds since Snaps are the favored way of distribution now
           if (!error) {
             $("#desktop__loading").attr("src", download_spinner);
             $("#notice").html("Downloading update...");

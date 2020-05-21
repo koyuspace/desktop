@@ -87,7 +87,7 @@
     },
     "linux": {
       "target": [
-        "AppImage"
+        "snap"
       ],
       "category": "Network"
     },
