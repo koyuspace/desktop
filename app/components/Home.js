@@ -44,10 +44,10 @@ export default class Home extends Component<Props> {
     $(document).ready(function() {
       window.setInterval(function() {
         // Check if koyu.space is online
-        $.get("https://koyu.space/api/v1/instance", function() {
+        $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function() {
           // Connect to update server and check for updates
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
-            if (data.split("\n")[0] === "26") {
+            if (data.split("\n")[0] === "27") {
               console.log("ok: "+data.split("\n")[0]);
               if (!loaded) {
                 $("#koyuspace-desktop").attr("style", "margin:0;padding:0;");
