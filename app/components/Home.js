@@ -47,7 +47,7 @@ export default class Home extends Component<Props> {
         $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function() {
           // Connect to update server and check for updates
           $.get("https://updates.koyu.space/desktop/latest?_=" + new Date().getTime(), function(data) {
-            if (data.split("\n")[0] === "27") {
+            if (data.split("\n")[0] === "28") {
               console.log("ok: "+data.split("\n")[0]);
               if (!loaded) {
                 $("#koyuspace-desktop").attr("style", "margin:0;padding:0;");
